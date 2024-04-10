@@ -119,7 +119,7 @@ class Africa_DMM_Workflows {
 - start date';
         $message .= "\n";
         $message .= "\n";
-        $message .= 'Your update should look like:';
+        $message .= 'Your message should look like:';
         $message .= "\n";
         $message .= "\n";
         $message .= 'new, 135, Simon\'s house church, Buipe, 2023-04-04';
