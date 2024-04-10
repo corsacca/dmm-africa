@@ -80,9 +80,9 @@ class Africa_DMM_Workflows {
                 return;
             }
             $this->process_group_update( $pieces, $link, $params );
-        } else if ( $pieces[0] === 'new' && count( $pieces ) >= 5 ){
+        } else if ( strtolower( $pieces[0] === 'new' ) && count( $pieces ) >= 5 ){
             $this->process_new_group( $pieces, $link, $params );
-        } else if ( $pieces[0] === 'help' ){
+        } else if ( strtolower( $pieces[0] ) === 'help' ){
             $this->help_format( $params );
         } else {
             $this->send_whatsapp_message( $params['From'], 'Sorry, please try again. Send "help" for the expected message format' );
