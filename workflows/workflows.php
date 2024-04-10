@@ -91,13 +91,38 @@ class Africa_DMM_Workflows {
     }
 
     public function help_format( $params ){
-        $message = 'To update a group send: group #, name of group leader, name of coach, # unbelievers, # baptized believers, # in group in an accountability group, Y/N church, # in group who have started new group, location, date started, general update';
+        $message = 'To update a group send: 
+- group #
+- name of group leader
+- name of coach
+- # unbelievers
+- # baptized believers
+- # in group in an accountability group
+- Y/N church, 
+- # in group who have started new group [3 people have started 3 groups = 3-3]
+- location, 
+- date started, 
+- general update';
         $message .= "\n";
-        $message .= 'Example: 135, Simon, Jonah, 4, 6, 3, Y, 3-6, Buipe, 2023-04-04';
         $message .= "\n";
-        $message .= 'To create a new group send: new, parent group #, group name, group location, start date';
+        $message .= 'Your update should look like:';
         $message .= "\n";
-        $message .= 'Example: new, 135, Buipe, 2023-04-04';
+        $message .= "\n";
+        $message .= '135, Simon, Jonah, 4, 6, 3, Y, 3-6, Buipe, 2023-04-04';
+        $message .= "\n";
+        $message .= "\n";
+        $message .= 'To create a new group send:
+- new
+- parent group #
+- group name
+- group location
+- start date';
+        $message .= "\n";
+        $message .= "\n";
+        $message .= 'Your update should look like:';
+        $message .= "\n";
+        $message .= "\n";
+        $message .= 'new, 135, Simon\'s house church, Buipe, 2023-04-04';
         $this->send_whatsapp_message( $params['From'], $message );
     }
 
