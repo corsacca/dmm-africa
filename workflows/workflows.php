@@ -42,7 +42,6 @@ class Africa_DMM_Workflows {
      * Africa_DMM_Workflows constructor.
      */
     public function __construct() {
-        add_filter( 'dt_workflows', [ $this, 'fetch_default_workflows_filter' ], 10, 2 );
         add_action( 'dt_twilio_message_received', [ $this, 'dt_twilio_message_received' ], 10, 3 );
     }
 
@@ -86,8 +85,23 @@ class Africa_DMM_Workflows {
             $this->process_group_update( $pieces, $link, $params );
         } else if ( $pieces[0] === 'new' && count( $pieces ) >= 5 ){
             $this->process_new_group( $pieces, $link, $params );
+        } else if ( $pieces[0] === 'help' ){
+            $this->help_format( $params );
+        } else {
+            $this->send_whatsapp_message( $params['From'], 'Sorry, please try again. Send "help" for the expect message format' );
         }
         return;
+    }
+
+    public function help_format( $params ){
+        $message = 'To update a group send: group #, name of group leader, name of coach, # unbelievers, # baptized believers, # in group in an accountability group, Y/N church, # in group who have started new group, location, date started, general update';
+        $message .= "\n";
+        $message .= 'Example: 135, Simon, Jonah, 4, 6, 3, Y, 3-6, Buipe, 2023-04-04';
+        $message .= "\n";
+        $message .= 'To create a new group send: new, parent group #, group name, group location, start date';
+        $message .= "\n";
+        $message .= 'Example: new, 135, Buipe, 2023-04-04';
+        $this->send_whatsapp_message( $params['From'], $message );
     }
 
     public function process_group_update( $pieces, $link, $params ){
@@ -176,7 +190,7 @@ class Africa_DMM_Workflows {
         $group_update_comment .= 'Start Date: ' . $start_date;
 
         $group = [
-            'parent_group' => [ "values" => [ [ 'value' => $parent_group ] ] ],
+            'parent_groups' => [ "values" => [ [ 'value' => $parent_group ] ] ],
             'name' => $group_name,
             'start_date' => strtotime( $start_date ),
             'notes' => [ $group_update_comment ],
