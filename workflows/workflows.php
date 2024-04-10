@@ -70,9 +70,6 @@ class Africa_DMM_Workflows {
         $comment = $params['Body'];
 
         $pieces = explode( ',', $comment );
-        if ( count( $pieces ) < 3 || ( $pieces[0] !== 'new' && !is_numeric( $pieces[0] ) ) ){
-            return;
-        }
         $conversation = DT_Posts::get_post( 'conversations', $conversation_post_id, true, false );
         $link = '[' . $params['From'] . '](' . $conversation['permalink'] . ')';
 
@@ -88,7 +85,7 @@ class Africa_DMM_Workflows {
         } else if ( $pieces[0] === 'help' ){
             $this->help_format( $params );
         } else {
-            $this->send_whatsapp_message( $params['From'], 'Sorry, please try again. Send "help" for the expect message format' );
+            $this->send_whatsapp_message( $params['From'], 'Sorry, please try again. Send "help" for the expected message format' );
         }
         return;
     }
