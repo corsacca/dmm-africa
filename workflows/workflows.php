@@ -59,7 +59,7 @@ class Africa_DMM_Workflows {
                     'body' => $message,
                 ]
             );
-        dt_write_log( $message->sid );
+            dt_write_log( $message->sid );
     }
 
     public function dt_twilio_message_received( $type, $conversation_post_id, $params ){
@@ -73,7 +73,7 @@ class Africa_DMM_Workflows {
         $conversation = DT_Posts::get_post( 'conversations', $conversation_post_id, true, false );
         $link = '[' . $params['From'] . '](' . $conversation['permalink'] . ')';
 
-        if ( is_numeric( $pieces[0] ) && count( $pieces ) >= 10  ){
+        if ( is_numeric( $pieces[0] ) && count( $pieces ) >= 10 ){
             $group = DT_Posts::get_post( 'groups', $pieces[0], true, false );
             if ( is_wp_error( $group ) ){
                 $this->send_whatsapp_message( $params['From'], 'Group not found' );
@@ -189,7 +189,7 @@ class Africa_DMM_Workflows {
     }
 
 
-    public function process_new_group($pieces, $link, $params){
+    public function process_new_group( $pieces, $link, $params ){
         /**
          * 0. new
          * 1. parent group
@@ -212,7 +212,7 @@ class Africa_DMM_Workflows {
         $group_update_comment .= 'Start Date: ' . $start_date;
 
         $group = [
-            'parent_groups' => [ "values" => [ [ 'value' => $parent_group ] ] ],
+            'parent_groups' => [ 'values' => [ [ 'value' => $parent_group ] ] ],
             'name' => $group_name,
             'start_date' => strtotime( $start_date ),
             'notes' => [ $group_update_comment ],
