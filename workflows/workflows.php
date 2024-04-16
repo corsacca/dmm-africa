@@ -73,6 +73,9 @@ class Africa_DMM_Workflows {
         $conversation = DT_Posts::get_post( 'conversations', $conversation_post_id, true, false );
         $link = '[' . $params['From'] . '](' . $conversation['permalink'] . ')';
 
+        //trim each piece
+        $pieces = array_map( 'trim', $pieces );
+
         if ( is_numeric( $pieces[0] ) && count( $pieces ) === 9 ){
             $group = DT_Posts::get_post( 'groups', $pieces[0], true, false );
             if ( is_wp_error( $group ) ){
@@ -176,7 +179,7 @@ class Africa_DMM_Workflows {
             'four_fields_unbelievers' => $unbelievers,
             'four_fields_believers' => $baptized_believers,
             'four_fields_accountable' => $accountability_group,
-            'four_fields_church_commitment' => $church === 'Y' ? 'Y' : 'N',
+            'four_fields_church_commitment' => strtolower( $church ) === 'y' ? 'Y' : 'N',
             'four_fields_multiplying' => ( $started_new_group ?? 0 ) . ' - ' . ( $new_groups ?? 0 ),
             'dmm_loader' => $name_group_leader,
             'dmm_coach' => $name_of_coach,
