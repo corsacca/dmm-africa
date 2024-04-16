@@ -46,7 +46,7 @@ class Africa_DMM_Workflows {
     }
 
 
-    public function send_whatsapp_message( $to, $message ){
+    public function send_whatsapp_message( $from, $to, $message ){
         $token = get_option( Disciple_Tools_Twilio_API::$option_twilio_token );
         $sid = get_option( Disciple_Tools_Twilio_API::$option_twilio_sid );
 
@@ -55,7 +55,7 @@ class Africa_DMM_Workflows {
         $message = $twilio->messages
             ->create( $to,
                 [
-                    'from' => 'whatsapp:+14054496743',
+                    'from' => $from,
                     'body' => $message,
                 ]
             );
@@ -79,7 +79,7 @@ class Africa_DMM_Workflows {
         if ( is_numeric( $pieces[0] ) && count( $pieces ) === 9 ){
             $group = DT_Posts::get_post( 'groups', $pieces[0], true, false );
             if ( is_wp_error( $group ) ){
-                $this->send_whatsapp_message( $params['From'], 'Group not found' );
+                $this->send_whatsapp_message( $params['To'], $params['From'], 'Group not found' );
                 return;
             }
             $this->process_group_update( $pieces, $link, $params );
@@ -90,7 +90,7 @@ class Africa_DMM_Workflows {
         } else if ( strtolower( $pieces[0] ) === 'help' ){
             $this->help_format( $params );
         } else {
-            $this->send_whatsapp_message( $params['From'], 'Sorry, please try again. Send "help" for the expected message format' );
+            $this->send_whatsapp_message( $params['To'], $params['From'], 'Sorry, please try again. Send "help" for the expected message format' );
         }
         return;
     }
@@ -126,7 +126,7 @@ class Africa_DMM_Workflows {
         $message .= "\n";
         $message .= "\n";
         $message .= 'new, 135, Simon\'s house church, Buipe, 2023-04-04';
-        $this->send_whatsapp_message( $params['From'], $message );
+        $this->send_whatsapp_message( $params['To'], $params['From'], $message );
     }
 
     public function process_group_update( $pieces, $link, $params ){
@@ -186,7 +186,7 @@ class Africa_DMM_Workflows {
         ];
 
         $tets = DT_Posts::update_post( 'groups', $group_id, $group_update, false, false );
-        $this->send_whatsapp_message( $params['From'], 'Thank You' );
+        $this->send_whatsapp_message( $params['To'], $params['From'], 'Thank You' );
 
     }
 
@@ -224,7 +224,7 @@ class Africa_DMM_Workflows {
         if ( is_wp_error( $group ) ){
             return;
         }
-        $this->send_whatsapp_message( $params['From'], 'Group Created with number: ' . $group['ID'] );
+        $this->send_whatsapp_message( $params['To'], $params['From'], 'Group Created with number: ' . $group['ID'] );
     }
 
     public function process_text_update( $pieces, $link, $params ){
@@ -244,7 +244,7 @@ class Africa_DMM_Workflows {
             'notes' => [ $group_update_comment ],
         ];
         DT_Posts::update_post( 'groups', $group_id, $group_update, false, false );
-        $this->send_whatsapp_message( $params['From'], 'Thank You' );
+        $this->send_whatsapp_message( $params['To'], $params['From'], 'Thank You' );
     }
 }
 
