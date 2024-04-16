@@ -177,7 +177,7 @@ class Africa_DMM_Workflows {
             'four_fields_believers' => $baptized_believers,
             'four_fields_accountable' => $accountability_group,
             'four_fields_church_commitment' => $church === 'Y' ? 'Y' : 'N',
-            'four_fields_multiplying' => ( $started_new_group ?? 0 ) + ' - ' ( $new_groups ?? 0 ),
+            'four_fields_multiplying' => ( $started_new_group ?? 0 ) . ' - ' . ( $new_groups ?? 0 ),
             'dmm_loader' => $name_group_leader,
             'dmm_coach' => $name_of_coach,
         ];
