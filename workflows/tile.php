@@ -27,10 +27,13 @@ class Africa_DMM_Tile {
      */
     public function dt_details_additional_tiles( array $tiles, string $post_type = '' ){
         if ( $post_type === 'groups' ){
-            $group_preferences = dt_get_option( 'group_preferences' );
-            if ( empty( $group_preferences['four_fields'] ) ) {
-                $group_preferences['four_fields'] = 1;
-                update_option( 'group_preferences', $group_preferences );
+            $site_options = get_option( 'dt_site_options', [] );
+            if ( empty( $site_options['group_preferences']['four_fields'] ) ) {
+                $site_options['group_preferences']['four_fields'] = true;
+                update_option( 'dt_site_options', $site_options );
+            }
+            if ( isset( $tiles['four-fields'] ) ){
+                $tiles['four-fields']['hidden'] = false;
             }
         }
         return $tiles;
