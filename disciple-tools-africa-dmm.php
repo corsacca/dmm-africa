@@ -102,6 +102,7 @@ class Africa_DMM {
         }
 
         require_once( 'workflows/workflows.php' );
+        require_once( 'workflows/tile.php' );
 
     }
 

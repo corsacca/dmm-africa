@@ -173,6 +173,13 @@ class Africa_DMM_Workflows {
         $group_update = [
             'notes' => [ $group_update_comment ],
             'member_count' => $unbelievers + $baptized_believers,
+            'four_fields_unbelievers' => $unbelievers,
+            'four_fields_believers' => $baptized_believers,
+            'four_fields_accountable' => $accountability_group,
+            'four_fields_church_commitment' => $church === 'Y' ? 'Y' : 'N',
+            'four_fields_multiplying' => ( $started_new_group ?? 0 ) + ' - ' ( $new_groups ?? 0 ),
+            'dmm_loader' => $name_group_leader,
+            'dmm_coach' => $name_of_coach,
         ];
 
         $tets = DT_Posts::update_post( 'groups', $group_id, $group_update, false, false );
@@ -207,6 +214,7 @@ class Africa_DMM_Workflows {
             'parent_groups' => [ 'values' => [ [ 'value' => $parent_group ] ] ],
             'name' => $group_name,
             'start_date' => strtotime( $start_date ),
+            'contact_address' => [ 'values' => [ [ 'value' => $group_location ] ] ],
             'notes' => [ $group_update_comment ],
         ];
         $group = DT_Posts::create_post( 'groups', $group, false, false );
