@@ -55,7 +55,6 @@ class Africa_DMM_Workflows {
         $message = $twilio->messages
             ->create( $to,
                 [
-                    'from' => 'whatsapp:+14054496743',
                     'body' => $message,
                 ]
             );
