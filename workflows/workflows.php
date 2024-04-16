@@ -62,9 +62,9 @@ class Africa_DMM_Workflows {
             dt_write_log( $message->sid );
     }
 
-    public function dt_twilio_message_received( $type, $params, $conversation_post_id ){
+    public function dt_twilio_message_received( $type, $params, $conversation_post_id = null ){
 
-        if ( $type !== 'whatsapp' ){
+        if ( $type !== 'whatsapp' || empty( $conversation_post_id ) ){
             return;
         }
         $comment = $params['Body'];
