@@ -73,15 +73,17 @@ class Africa_DMM_Workflows {
         $conversation = DT_Posts::get_post( 'conversations', $conversation_post_id, true, false );
         $link = '[' . $params['From'] . '](' . $conversation['permalink'] . ')';
 
-        if ( is_numeric( $pieces[0] ) && count( $pieces ) >= 10 ){
+        if ( is_numeric( $pieces[0] ) && count( $pieces ) === 9 ){
             $group = DT_Posts::get_post( 'groups', $pieces[0], true, false );
             if ( is_wp_error( $group ) ){
                 $this->send_whatsapp_message( $params['From'], 'Group not found' );
                 return;
             }
             $this->process_group_update( $pieces, $link, $params );
-        } else if ( strtolower( $pieces[0] === 'new' ) && count( $pieces ) >= 5 ){
+        } else if ( strtolower( $pieces[0] === 'new' ) && count( $pieces ) === 5 ){
             $this->process_new_group( $pieces, $link, $params );
+        } else if ( is_numeric( $pieces[0] ) && count( $pieces ) === 2 ){
+            $this->process_text_update( $pieces, $link, $params );
         } else if ( strtolower( $pieces[0] ) === 'help' ){
             $this->help_format( $params );
         } else {
@@ -98,17 +100,15 @@ class Africa_DMM_Workflows {
 - # unbelievers
 - # baptized believers
 - # in group in an accountability group
-- Y/N church, 
-- # in group who have started new group [3 people have started 3 groups = 3-3]
-- location, 
-- date started, 
-- general update';
+- Y/N church
+- # in group who have started a new group
+- # of groups this group has started';
         $message .= "\n";
         $message .= "\n";
         $message .= 'Your update should look like:';
         $message .= "\n";
         $message .= "\n";
-        $message .= '135, Simon, Jonah, 4, 6, 3, Y, 3-6, Buipe, 2023-04-04';
+        $message .= '135, Simon, Jonah, 4, 6, 3, Y, 3, 6';
         $message .= "\n";
         $message .= "\n";
         $message .= 'To create a new group send:
@@ -135,12 +135,10 @@ class Africa_DMM_Workflows {
          * 4. # baptized believers
          * 5. # in group in an accountability group
          * 6. Y/N church
-         * 7. # in group who have started new group [3 people have started 3 groups = 3-3]
-         * 8. location
-         * 9. date started
-         * 10. general update
+         * 7. # in group who have started new group
+         * 8. # of groups this group has started
          *
-         * example: 135, Simon, Jonah, 4, 6, 3, Y, 3-6, Buipe, 4-4-23
+         * example: 135, Simon, Jonah, 4, 6, 3, Y, 3, 6
          */
 
         $group_id = (int) $pieces[0];
@@ -151,9 +149,7 @@ class Africa_DMM_Workflows {
         $accountability_group = (int) $pieces[5];
         $church = $pieces[6];
         $started_new_group = $pieces[7];
-        $location = $pieces[8];
-        $date_started = $pieces[9];
-        $comment = $pieces[10] ?? '';
+        $new_groups = $pieces[8];
 
         $group_update_comment = 'Update Received from: ' . $link;
         $group_update_comment .= "\n\n";
@@ -169,13 +165,9 @@ class Africa_DMM_Workflows {
         $group_update_comment .= "\n";
         $group_update_comment .= 'Is Church: ' . $church;
         $group_update_comment .= "\n";
-        $group_update_comment .= 'Started New Group: ' . $started_new_group;
+        $group_update_comment .= '# who Started New Group: ' . $started_new_group;
         $group_update_comment .= "\n";
-        $group_update_comment .= 'Location: ' . $location;
-        $group_update_comment .= "\n";
-        $group_update_comment .= 'Date Started: ' . $date_started;
-        $group_update_comment .= "\n";
-        $group_update_comment .= 'General Update: ' . $comment;
+        $group_update_comment .= 'New Groups #: ' . $new_groups;
 
 
         $group_update = [
@@ -222,10 +214,26 @@ class Africa_DMM_Workflows {
             return;
         }
         $this->send_whatsapp_message( $params['From'], 'Group Created with number: ' . $group['ID'] );
+    }
 
+    public function process_text_update( $pieces, $link, $params ){
+        /**
+         * 0. group #
+         * 1. text update
+         */
 
+        $group_id = (int) $pieces[0];
+        $text_update = $pieces[1];
 
+        $group_update_comment = 'Text Update Received from: ' . $link;
+        $group_update_comment .= "\n\n";
+        $group_update_comment .= $text_update;
 
+        $group_update = [
+            'notes' => [ $group_update_comment ],
+        ];
+        DT_Posts::update_post( 'groups', $group_id, $group_update, false, false );
+        $this->send_whatsapp_message( $params['From'], 'Thank You' );
     }
 }
 
