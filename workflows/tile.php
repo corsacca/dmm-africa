@@ -16,6 +16,8 @@ class Africa_DMM_Tile {
     public function __construct(){
         add_filter( 'dt_details_additional_tiles', [ $this, 'dt_details_additional_tiles' ], 10, 2 );
         add_filter( 'dt_custom_fields_settings', [ $this, 'dt_custom_fields' ], 1, 2 );
+        add_action( 'dt_details_additional_section', [ $this, 'dt_details_additional_section' ], 30, 2 );
+
     }
 
     /**
@@ -60,6 +62,16 @@ class Africa_DMM_Tile {
             ];
         }
         return $fields;
+    }
+    public function dt_details_additional_section( $section, $post_type ) {
+        if ( $post_type === 'groups' && $section === 'four-fields' ){
+            ?>
+            <div >
+                <h3 class="section-subheader">Group ID</h3>
+                <p><?php echo esc_html( get_the_ID() ); ?></p>
+            </div>
+
+        <?php }
     }
 }
 
