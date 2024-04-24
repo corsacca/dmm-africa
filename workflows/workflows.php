@@ -83,7 +83,7 @@ class Africa_DMM_Workflows {
                 return;
             }
             $this->process_group_update( $pieces, $link, $params );
-        } else if ( strtolower( $pieces[0] === 'new' ) && count( $pieces ) === 5 ){
+        } else if ( strtolower( $pieces[0] ) === 'new' && count( $pieces ) === 5 ){
             $this->process_new_group( $pieces, $link, $params );
         } else if ( is_numeric( $pieces[0] ) && count( $pieces ) === 2 ){
             $this->process_text_update( $pieces, $link, $params );
@@ -126,6 +126,19 @@ class Africa_DMM_Workflows {
         $message .= "\n";
         $message .= "\n";
         $message .= 'new, 135, Simon\'s house church, Buipe, 2023-04-04';
+
+        $message .= "\n";
+        $message .= "\n";
+        $message .= 'To send a text update to a group send:
+- group #
+- text update';
+        $message .= "\n";
+        $message .= "\n";
+        $message .= 'Your message should look like:';
+        $message .= "\n";
+        $message .= "\n";
+        $message .= '135, We had a great time of prayer and fasting today.';
+
         $this->send_whatsapp_message( $params['To'], $params['From'], $message );
     }
 
