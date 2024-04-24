@@ -52,14 +52,14 @@ class Africa_DMM_Workflows {
 
         $twilio = new Client( $sid, $token );
 
-        $message = $twilio->messages
+        $sent = $twilio->messages
             ->create( $to,
                 [
                     'from' => $from,
                     'body' => $message,
                 ]
             );
-        if ( $message->sid ){
+        if ( $sent->sid ){
             DT_Posts::add_post_comment( 'conversations', $conversation_post_id, $message, 'whatsapp', [
                 'user_id'        => 0,
                 'comment_author' => $from,
