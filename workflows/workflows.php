@@ -46,7 +46,7 @@ class Africa_DMM_Workflows {
     }
 
 
-    public function send_whatsapp_message( $from, $to, $message ){
+    public function send_whatsapp_message( $from, $to, $message, $conversation_post_id ){
         $token = get_option( Disciple_Tools_Twilio_API::$option_twilio_token );
         $sid = get_option( Disciple_Tools_Twilio_API::$option_twilio_sid );
 
@@ -59,7 +59,12 @@ class Africa_DMM_Workflows {
                     'body' => $message,
                 ]
             );
-            dt_write_log( $message->sid );
+        if ( $message->sid ){
+            DT_Posts::add_post_comment( 'conversations', $conversation_post_id, $message, 'whatsapp', [
+                'user_id'        => 0,
+                'comment_author' => $from,
+            ], false, false );
+        }
     }
 
     public function dt_twilio_message_received( $type, $params, $conversation_post_id = null ){
@@ -79,23 +84,23 @@ class Africa_DMM_Workflows {
         if ( is_numeric( $pieces[0] ) && count( $pieces ) === 9 ){
             $group = DT_Posts::get_post( 'groups', $pieces[0], true, false );
             if ( is_wp_error( $group ) ){
-                $this->send_whatsapp_message( $params['To'], $params['From'], 'Group not found' );
+                $this->send_whatsapp_message( $params['To'], $params['From'], 'Group not found', $conversation_post_id );
                 return;
             }
-            $this->process_group_update( $pieces, $link, $params );
+            $this->process_group_update( $pieces, $link, $params, $conversation_post_id );
         } else if ( strtolower( $pieces[0] ) === 'new' && count( $pieces ) === 5 ){
-            $this->process_new_group( $pieces, $link, $params );
+            $this->process_new_group( $pieces, $link, $params, $conversation_post_id );
         } else if ( is_numeric( $pieces[0] ) && count( $pieces ) === 2 ){
-            $this->process_text_update( $pieces, $link, $params );
+            $this->process_text_update( $pieces, $link, $params, $conversation_post_id );
         } else if ( strtolower( $pieces[0] ) === 'help' ){
-            $this->help_format( $params );
+            $this->help_format( $params, $conversation_post_id );
         } else {
-            $this->send_whatsapp_message( $params['To'], $params['From'], 'Sorry, please try again. Send "help" for the expected message format' );
+            $this->send_whatsapp_message( $params['To'], $params['From'], 'Sorry, please try again. Send "help" for the expected message format', $conversation_post_id );
         }
         return;
     }
 
-    public function help_format( $params ){
+    public function help_format( $params, $conversation_post_id ){
         $message = 'To update a group send: 
 - group #
 - name of group leader
@@ -139,10 +144,10 @@ class Africa_DMM_Workflows {
         $message .= "\n";
         $message .= '135, We had a great time of prayer and fasting today.';
 
-        $this->send_whatsapp_message( $params['To'], $params['From'], $message );
+        $this->send_whatsapp_message( $params['To'], $params['From'], $message, $conversation_post_id );
     }
 
-    public function process_group_update( $pieces, $link, $params ){
+    public function process_group_update( $pieces, $link, $params, $conversation_post_id ){
         /**
          * 0. group #
          * 1. name group leader
@@ -199,12 +204,12 @@ class Africa_DMM_Workflows {
         ];
 
         $tets = DT_Posts::update_post( 'groups', $group_id, $group_update, false, false );
-        $this->send_whatsapp_message( $params['To'], $params['From'], 'Thank You' );
+        $this->send_whatsapp_message( $params['To'], $params['From'], 'Thank You', $conversation_post_id );
 
     }
 
 
-    public function process_new_group( $pieces, $link, $params ){
+    public function process_new_group( $pieces, $link, $params, $conversation_post_id ){
         /**
          * 0. new
          * 1. parent group
@@ -237,10 +242,10 @@ class Africa_DMM_Workflows {
         if ( is_wp_error( $group ) ){
             return;
         }
-        $this->send_whatsapp_message( $params['To'], $params['From'], 'Group Created with number: ' . $group['ID'] );
+        $this->send_whatsapp_message( $params['To'], $params['From'], 'Group Created with number: ' . $group['ID'], $conversation_post_id );
     }
 
-    public function process_text_update( $pieces, $link, $params ){
+    public function process_text_update( $pieces, $link, $params, $conversation_post_id ){
         /**
          * 0. group #
          * 1. text update
@@ -257,7 +262,7 @@ class Africa_DMM_Workflows {
             'notes' => [ $group_update_comment ],
         ];
         DT_Posts::update_post( 'groups', $group_id, $group_update, false, false );
-        $this->send_whatsapp_message( $params['To'], $params['From'], 'Thank You' );
+        $this->send_whatsapp_message( $params['To'], $params['From'], 'Thank You', $conversation_post_id );
     }
 }
 
