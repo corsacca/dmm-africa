@@ -62,7 +62,7 @@ class Africa_DMM_Workflows {
         if ( $sent->sid ){
             DT_Posts::add_post_comment( 'conversations', $conversation_post_id, $message, 'whatsapp', [
                 'user_id'        => 0,
-                'comment_author' => $from,
+                'comment_author' => DT_Conversations_API::validate_and_format_phone( $from ),
             ], false, false );
         }
     }
