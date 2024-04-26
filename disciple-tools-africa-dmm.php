@@ -88,14 +88,14 @@ class Africa_DMM {
 
     private function __construct() {
         $is_rest = dt_is_rest();
-        if ( $is_rest && strpos( dt_get_url_path(), 'africa-dmm' ) !== false ) {
-            require_once( 'rest-api/rest-api.php' ); // adds starter rest api class
-        }
-        if ( is_admin() ) {
-            require_once( 'admin/admin-menu-and-tabs.php' ); // adds starter admin page and section for plugin
-        }
+//        if ( $is_rest && strpos( dt_get_url_path(), 'africa-dmm' ) !== false ) {
+//            require_once( 'rest-api/rest-api.php' ); // adds starter rest api class
+//        }
+//        if ( is_admin() ) {
+//            require_once( 'admin/admin-menu-and-tabs.php' ); // adds starter admin page and section for plugin
+//        }
 
-        $this->i18n();
+//        $this->i18n();
 
         if ( is_admin() ) { // adds links to the plugin description area in the plugin admin list.
             add_filter( 'plugin_row_meta', [ $this, 'plugin_description_links' ], 10, 4 );
